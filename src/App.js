@@ -1,99 +1,30 @@
 import React, { Component } from 'react';
 import './App.css';
 
-const Color = ({color, children, ...props}) => {
-  return (
-    <span style={{ color }}>
-      {children}
-    </span>
-  )
-}
+import ValueEditor from './components/ValueEditor';
+import ValueToggle from './components/ValueToggle';
+import TextBox from './components/TextBox';
 
-const Bold = ({bold, children, ...props}) => {
-  let weight;
-  bold ? weight = 'bold' : weight = 200
-
-  return (
-    <span style={{fontWeight: weight}}>{children}</span>
-  ) 
-}
-
-const Italic = ({italic, children, ...props}) => {
-  let fontStyle;
-  italic ? fontStyle = 'italic' : fontStyle = 'normal';
-
-  return (
-    <span style={{ fontStyle }}>{ children }</span>
-  )
-}
-
-const BoldEditor = ({bold, onChange, ...props}) => {
-  return (
-    <div>
-      <label>Bold: </label>
-      <input 
-        type="checkbox"
-        checked={bold}
-        onChange={onChange}
-      />
-    </div>
-  )
-}
-
-const ItalicEditor = ({italic, onChange, ...props}) => {
-  return (
-    <div>
-      <label>Italic: </label>
-      <input
-        type="checkbox"
-        checked={italic}
-        onChange={onChange}
-      />
-    </div>
-  )
-}
-
-const ColorEditor = ({color, onChange, ...props}) => {
-  return (
-    <div>
-      <label>color: </label>
-      <input
-        type="value"
-        value={color}
-        onChange={onChange}
-      />
-      <div className="swatch" style={{backgroundColor: color}}/>
-    </div>
-  )
-}
-
-const Editor = ({value, onValueChange, ...props}) => {
-  return (  
-    <div>
-      <label>message: </label>
-      <input
-        type="value"
-        value={value}
-        onChange={onValueChange}
-      />
-    </div>
-  )
-}
 
 class App extends Component {
   state = {
     value: 'type your message',
     color: '#00F',
+    opacity: 1,
     bold: true,
     italic: false
   }
 
-  onChange = e => {
+  onTextChange = e => {
     this.setState({ value: e.target.value })
   }
 
   onColorChange = e => {
     this.setState({ color: e.target.value });
+  }
+
+  onOpacityChange = e => {
+    this.setState({ opacity: e.target.value});
   }
 
   onBoldChange = e => {
@@ -108,32 +39,41 @@ class App extends Component {
     return (
       <div className="App">
         <h2>React Editor</h2>
-        <Editor
+        
+        <ValueEditor
+          prop='value'
           value={this.state.value}
-          onValueChange={this.onChange}
+          onChange={this.onTextChange}
         />
-        <ColorEditor
-          color={this.state.color}
-          onChange={this.onColorChange}
+        <ValueEditor
+          prop='color'
+          value={this.state.color}
+          onChange={this.onColorChange}         
         />
-        <BoldEditor
-          bold={this.state.bold}
+        <div className="swatch" style={{ backgroundColor: this.state.color }}/>
+
+        <ValueEditor
+          prop='opacity'
+          value={this.state.opacity}
+          onChange={this.onOpacityChange}
+        />
+        <ValueToggle
+          prop='bold'
+          value={this.state.bold}
           onChange={this.onBoldChange}
         />
-        <ItalicEditor
-          italic={this.state.italic}
+        <ValueToggle
+          prop='italic'
+          value={this.state.italic}
           onChange={this.onItalicChange}
         />
-
-        <Bold bold={this.state.bold}>
-          <Italic italic={this.state.italic}>
-            <Color color={this.state.color}>
-              <div>
-                {this.state.value}
-              </div>
-            </Color>
-          </Italic>
-        </Bold>
+        <TextBox
+          text={this.state.value}
+          color={this.state.color}
+          opacity={this.state.opacity}
+          bold={this.state.bold}
+          italic={this.state.italic}
+        />
       </div>
     );
   }
